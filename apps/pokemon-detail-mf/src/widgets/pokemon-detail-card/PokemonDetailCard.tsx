@@ -33,13 +33,12 @@ export function PokemonDetailCard({ pokemon }: PokemonDetailCardProps) {
             </p>
 
             <img
-  alt={pokemon.name}
-  className="h-80 w-full object-contain drop-shadow-2xl"
-  decoding="async"
-  fetchPriority="high"
-  loading="eager"
-  src={pokemon.image}
-/>
+              alt={pokemon.name}
+              className="h-80 w-full object-contain drop-shadow-2xl"
+              decoding="async"
+              loading="eager"
+              src={pokemon.image}
+            />
 
             <div className="mt-6 text-center">
               <h2 className="text-5xl font-black capitalize text-slate-950 dark:text-white">
@@ -135,13 +134,13 @@ export function PokemonDetailCard({ pokemon }: PokemonDetailCardProps) {
                   className="rounded-3xl border border-slate-200 bg-gradient-to-br from-red-50 via-white to-sky-50 p-4 text-center dark:border-cyan-300/10 dark:from-slate-900 dark:via-slate-950 dark:to-cyan-950/40"
                   key={evolution.id}
                 >
-                <img
-  alt={evolution.name}
-  className="mx-auto h-28 w-full object-contain"
-  decoding="async"
-  loading="lazy"
-  src={evolution.image}
-/>
+                  <img
+                    alt={evolution.name}
+                    className="mx-auto h-28 w-full object-contain"
+                    decoding="async"
+                    loading="lazy"
+                    src={evolution.image}
+                  />
 
                   <p className="mt-3 text-xs font-black uppercase tracking-[0.25em] text-red-500 dark:text-cyan-300">
                     #{evolution.id}

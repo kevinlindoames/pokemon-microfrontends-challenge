@@ -1,47 +1,8 @@
-import type { PokemonSummary } from '@pokemon-challenge/shared';
+import { PokemonPreviewCard, Skeleton } from '@pokemon-challenge/ui';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { usePokemonInfiniteQuery } from '../../../entities/pokemon/api/use-pokemon-infinite-query';
 import { useSearchPokemonQuery } from '../../../entities/pokemon/api/use-search-pokemon-query';
 import { usePokemonSearchStore } from '../model/pokemon-search.store';
-
-function PokemonSearchCard({
-  pokemon,
-  onSelect,
-}: {
-  pokemon: PokemonSummary;
-  onSelect: () => void;
-}) {
-  return (
-    <Link
-      className="group rounded-3xl border border-slate-200 bg-white p-4 shadow-lg shadow-slate-200/60 transition hover:-translate-y-1 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-red-300 dark:border-cyan-300/10 dark:bg-slate-950/80 dark:shadow-cyan-950/20 dark:focus:ring-cyan-300/40"
-      to={`/pokemon/${pokemon.id}`}
-      onClick={onSelect}
-    >
-      <div className="flex h-36 items-center justify-center rounded-2xl bg-gradient-to-br from-red-50 via-white to-sky-50 p-4 dark:from-slate-900 dark:via-slate-950 dark:to-cyan-950/40">
-        {pokemon.image ? (
-          <img
-            alt={pokemon.name}
-            className="h-full w-full object-contain transition group-hover:scale-110"
-            decoding="async"
-            loading="lazy"
-            src={pokemon.image}
-          />
-        ) : (
-          <span className="text-sm font-bold text-slate-400">No image</span>
-        )}
-      </div>
-
-      <p className="mt-4 text-xs font-black uppercase tracking-[0.25em] text-red-500 dark:text-cyan-300">
-        #{pokemon.id}
-      </p>
-
-      <h3 className="mt-1 text-xl font-black capitalize text-slate-950 dark:text-white">
-        {pokemon.name.replace(/-/g, ' ')}
-      </h3>
-    </Link>
-  );
-}
 
 function getFocusableElements(container: HTMLElement): HTMLElement[] {
   return Array.from(
@@ -135,19 +96,13 @@ export function PokemonSearchModal() {
       const lastFocusableElement =
         focusableElements[focusableElements.length - 1];
 
-      if (
-        event.shiftKey &&
-        document.activeElement === firstFocusableElement
-      ) {
+      if (event.shiftKey && document.activeElement === firstFocusableElement) {
         event.preventDefault();
         lastFocusableElement.focus();
         return;
       }
 
-      if (
-        !event.shiftKey &&
-        document.activeElement === lastFocusableElement
-      ) {
+      if (!event.shiftKey && document.activeElement === lastFocusableElement) {
         event.preventDefault();
         firstFocusableElement.focus();
       }
@@ -272,16 +227,18 @@ export function PokemonSearchModal() {
             <>
               {searchQuery.isFetching ? (
                 <div
-                  aria-live="polite"
-                  className="rounded-[2rem] border border-slate-200 bg-white p-8 text-center font-black text-slate-500 dark:border-cyan-300/10 dark:bg-slate-950/70 dark:text-slate-400"
+                  aria-label="Buscando Pokémon"
+                  className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
                 >
-                  Buscando Pokémon...
+                  <Skeleton className="h-64 rounded-3xl" />
                 </div>
               ) : exactSearchResult ? (
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                  <PokemonSearchCard
+                  <PokemonPreviewCard
+                    key={exactSearchResult.id}
                     pokemon={exactSearchResult}
-                    onSelect={closeSearch}
+                    to={`/pokemon/${exactSearchResult.id}`}
+                    onClick={closeSearch}
                   />
                 </div>
               ) : (
@@ -313,10 +270,7 @@ export function PokemonSearchModal() {
                   className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
                 >
                   {Array.from({ length: 8 }).map((_, index) => (
-                    <div
-                      className="h-64 animate-pulse rounded-3xl bg-slate-200 dark:bg-white/10"
-                      key={index}
-                    />
+                    <Skeleton className="h-64 rounded-3xl" key={index} />
                   ))}
                 </div>
               ) : infiniteQuery.isError ? (
@@ -330,10 +284,11 @@ export function PokemonSearchModal() {
                 <>
                   <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                     {pokemonList.map((pokemon) => (
-                      <PokemonSearchCard
+                      <PokemonPreviewCard
                         key={pokemon.id}
                         pokemon={pokemon}
-                        onSelect={closeSearch}
+                        to={`/pokemon/${pokemon.id}`}
+                        onClick={closeSearch}
                       />
                     ))}
                   </div>
@@ -341,12 +296,14 @@ export function PokemonSearchModal() {
                   <div ref={sentinelRef} className="h-12" />
 
                   {infiniteQuery.isFetchingNextPage && (
-                    <p
-                      aria-live="polite"
-                      className="py-6 text-center text-sm font-black uppercase tracking-[0.25em] text-red-500 dark:text-cyan-300"
+                    <div
+                      aria-label="Cargando más Pokémon"
+                      className="grid gap-5 py-6 sm:grid-cols-2 lg:grid-cols-4"
                     >
-                      Loading more Pokémon...
-                    </p>
+                      {Array.from({ length: 4 }).map((_, index) => (
+                        <Skeleton className="h-64 rounded-3xl" key={index} />
+                      ))}
+                    </div>
                   )}
 
                   {!infiniteQuery.hasNextPage && (

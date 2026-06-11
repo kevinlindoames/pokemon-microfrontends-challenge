@@ -1,6 +1,6 @@
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../features/auth/model/auth.store';
-import { ThemeToggle } from '../../features/theme-toggle/ui/ThemeToggle';
+import { ThemeToggle } from '../../features/theme/ui/ThemeToggle';
 import { LastVisitedToast } from '../../features/last-visited-toast/ui/LastVisitedToast';
 import { PokemonSearchButton } from '../../features/pokemon-search/ui/PokemonSearchButton';
 import { PokemonSearchModal } from '../../features/pokemon-search/ui/PokemonSearchModal';

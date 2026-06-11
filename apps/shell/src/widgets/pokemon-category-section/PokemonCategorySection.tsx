@@ -1,3 +1,4 @@
+import { Skeleton, Surface } from '@pokemon-challenge/ui';
 import type { PokemonTypeName } from '@pokemon-challenge/shared';
 import { usePokemonByTypeQuery } from '../../entities/pokemon/api/use-pokemon-by-type-query';
 import { PokemonCard } from '../../entities/pokemon/ui/PokemonCard';
@@ -19,7 +20,7 @@ export function PokemonCategorySection({
   const { data, isLoading, isError } = usePokemonByTypeQuery(type);
 
   return (
-    <section className="rounded-[2rem] border border-slate-200 bg-white/85 p-5 shadow-xl shadow-slate-200/60 backdrop-blur dark:border-cyan-300/10 dark:bg-slate-950/70 dark:shadow-cyan-950/20">
+    <Surface as="section" className="p-5 backdrop-blur">
       <div className="mb-5 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.35em] text-red-500 dark:text-cyan-300">
@@ -37,20 +38,20 @@ export function PokemonCategorySection({
       </div>
 
       {isLoading ? (
-        <div className={pokemonGridClassName}>
+        <div
+          aria-label={`Cargando Pokémon de tipo ${label}`}
+          className={pokemonGridClassName}
+        >
           {Array.from({ length: 10 }).map((_, index) => (
-            <div
-              className="h-52 animate-pulse rounded-3xl bg-slate-200 dark:bg-white/10"
-              key={index}
-            />
+            <Skeleton className="h-52 rounded-3xl" key={index} />
           ))}
         </div>
       ) : null}
 
       {isError ? (
-        <div className="rounded-3xl border border-red-200 bg-red-50 p-5 text-sm font-bold text-red-700 dark:border-red-400/20 dark:bg-red-500/10 dark:text-red-100">
+        <Surface className="p-5 text-sm font-bold" radius="3xl" variant="danger">
           No se pudieron cargar los Pokémon de tipo {label}.
-        </div>
+        </Surface>
       ) : null}
 
       {data ? (
@@ -60,6 +61,6 @@ export function PokemonCategorySection({
           ))}
         </div>
       ) : null}
-    </section>
+    </Surface>
   );
 }

@@ -1,0 +1,1 @@
+export { PokemonPreviewCard } from './PokemonPreviewCard';

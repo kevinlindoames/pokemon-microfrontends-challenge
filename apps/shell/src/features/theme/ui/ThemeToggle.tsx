@@ -1,3 +1,4 @@
+import { Button } from '@pokemon-challenge/ui';
 import { useThemeStore } from '../model/theme.store';
 
 export function ThemeToggle() {
@@ -7,12 +8,14 @@ export function ThemeToggle() {
   const isDark = theme === 'dark';
 
   return (
-    <button
-      className="rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-black text-blue-700 shadow-sm transition hover:bg-blue-100 dark:border-cyan-300/20 dark:bg-cyan-300/10 dark:text-cyan-100 dark:hover:bg-cyan-300/20"
+    <Button
+      aria-label={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+      size="sm"
       type="button"
+      variant="secondary"
       onClick={toggleTheme}
     >
       {isDark ? '☀️ Modo claro' : '🌙 Modo oscuro'}
-    </button>
+    </Button>
   );
 }

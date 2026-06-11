@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { Button } from '@pokemon-challenge/ui';
 import type { FormEvent } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { validateLoginForm } from '../lib/auth.validation';
 import type {
@@ -42,7 +43,7 @@ export function LoginForm() {
         </label>
 
         <input
-          className="w-full rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-red-300"
+          className="w-full rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-red-300 focus:ring-4 focus:ring-red-300/20"
           placeholder="usuario@email.com"
           type="email"
           value={values.email}
@@ -67,7 +68,7 @@ export function LoginForm() {
         </label>
 
         <input
-          className="w-full rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-red-300"
+          className="w-full rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-red-300 focus:ring-4 focus:ring-red-300/20"
           placeholder="Mínimo 6 caracteres"
           type="password"
           value={values.password}
@@ -86,12 +87,9 @@ export function LoginForm() {
         ) : null}
       </div>
 
-      <button
-        className="w-full rounded-2xl bg-red-500 px-5 py-3 font-black text-white shadow-lg shadow-red-500/20 transition hover:bg-red-400"
-        type="submit"
-      >
+      <Button fullWidth size="md" type="submit" variant="primary">
         Ingresar
-      </button>
+      </Button>
     </form>
   );
 }

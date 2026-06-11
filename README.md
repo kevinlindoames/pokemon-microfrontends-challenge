@@ -1,24 +1,28 @@
-    # Pokémon Microfrontends Challenge
+# Pokémon Microfrontends Challenge
 
-Aplicación frontend construida con **React 18**, **TypeScript**, **Vite** y **Module Federation**, basada en **PokeAPI**.
+Aplicación frontend construida con **React 18**, **TypeScript**, **Vite**, **Module Federation** y **PokeAPI**.
 
-El proyecto implementa una arquitectura de microfrontends con un **Shell principal** y dos microfrontends remotos:
-
-* **Shell**: autenticación, navegación, layout global, home, búsqueda fullscreen, tema claro/oscuro y toast global.
-* **Pokémon Detail MF**: detalle premium tipo Pokédex.
-* **Pokémon History MF**: historial persistente de Pokémon visitados.
-
----
+El proyecto implementa una arquitectura de microfrontends con un **Shell principal** y dos microfrontends remotos desplegados de forma independiente.
 
 ## Demo en producción
 
-### Aplicación principal
+### Shell
 
 ```txt
 https://pokemon-shell-mf.netlify.app/
 ```
 
 ### Microfrontends remotos
+
+```txt
+Pokémon Detail MF:
+https://pokemon-detail-mf.netlify.app/
+
+Pokémon History MF:
+https://pokemon-history-mf.netlify.app/
+```
+
+### Remote entries
 
 ```txt
 Detail MF:
@@ -28,8 +32,6 @@ History MF:
 https://pokemon-history-mf.netlify.app/assets/remoteEntry.js
 ```
 
----
-
 ## Repositorio
 
 ```txt
@@ -38,19 +40,22 @@ https://github.com/kevinlindoames/pokemon-microfrontends-challenge
 
 ---
 
-## 1. Descripción del proyecto
+## 1. Descripción
 
-Este proyecto resuelve un reto técnico frontend orientado a una arquitectura modular y escalable usando microfrontends.
+Este proyecto resuelve un reto técnico frontend orientado a arquitectura modular, microfrontends, consumo de APIs, persistencia local, testing, performance, accesibilidad y despliegue independiente.
 
 La aplicación permite:
 
 * Iniciar sesión con un login mock.
-* Navegar por rutas protegidas.
-* Visualizar categorías Pokémon.
-* Buscar Pokémon en un modal fullscreen con infinite scroll.
-* Ver una ficha detallada tipo Pokédex.
+* Proteger rutas privadas.
+* Visualizar categorías Pokémon en el Home.
+* Buscar Pokémon por nombre exacto desde un modal fullscreen accesible.
+* Navegar al detalle de un Pokémon.
+* Cargar el detalle desde un microfrontend remoto.
+* Consultar información extendida tipo Pokédex.
 * Registrar historial de Pokémon visitados.
-* Mostrar un toast con el último Pokémon visitado al recargar.
+* Cargar el historial desde otro microfrontend remoto.
+* Mostrar un toast con el último Pokémon visitado.
 * Alternar entre modo claro y oscuro.
 * Ejecutar tests unitarios y de componentes.
 * Desplegar Shell y remotes de forma independiente en Netlify.
@@ -73,14 +78,16 @@ La aplicación permite:
 * React Testing Library
 * PokeAPI
 * Netlify
+* GitHub Actions
 
 ### Arquitectura
 
-* Monorepo con npm workspaces
-* Microfrontends
-* Feature-Sliced Design adaptado
-* Shared package para lógica común
-* Separación por capas: `app`, `pages`, `widgets`, `features`, `entities`, `shared`
+* Monorepo con npm workspaces.
+* Microfrontends.
+* Feature-Sliced Design adaptado.
+* Shared package para lógica común.
+* UI package para Design System compartido.
+* Separación por capas: `app`, `pages`, `widgets`, `features`, `entities`, `shared`.
 
 ---
 
@@ -93,20 +100,24 @@ pokemon-microfrontends-challenge/
 │   ├── pokemon-detail-mf/
 │   └── pokemon-history-mf/
 ├── packages/
-│   └── shared/
+│   ├── shared/
+│   └── ui/
+├── .github/
+│   └── workflows/
+│       └── ci.yml
 ├── package.json
 ├── package-lock.json
 ├── vitest.config.ts
 ├── vitest.setup.ts
-├── README.md
-└── .gitignore
+├── .nvmrc
+└── README.md
 ```
 
 ---
 
 ## 4. Microfrontends
 
-### Shell
+## 4.1 Shell
 
 Ubicación:
 
@@ -132,15 +143,17 @@ Responsabilidades:
 * Sesión en `localStorage`.
 * Rutas protegidas.
 * Layout global.
-* Home con categorías.
+* Home por categorías.
 * Buscador fullscreen.
 * Tema claro/oscuro.
-* Toast de último Pokémon visitado.
-* Consumo de remotes mediante Module Federation.
+* Toast global de último Pokémon visitado.
+* Carga dinámica de remotes mediante Module Federation.
+* Manejo de errores remotos con `ErrorBoundary`.
+* Skeletons reutilizables para carga remota.
 
 ---
 
-### Pokémon Detail MF
+## 4.2 Pokémon Detail MF
 
 Ubicación:
 
@@ -177,9 +190,17 @@ Responsabilidades:
 * Consultar detalle del Pokémon.
 * Consultar species.
 * Consultar evolution chain.
-* Mostrar ficha Pokédex premium.
-* Registrar visita.
+* Mostrar ficha tipo Pokédex.
+* Registrar visita en historial.
 * Actualizar último Pokémon visitado.
+
+Recursos usados:
+
+```txt
+GET /pokemon/{id or name}
+GET /pokemon-species/{id or name}
+GET /evolution-chain/{id}
+```
 
 Datos mostrados:
 
@@ -193,13 +214,13 @@ Datos mostrados:
 * Experiencia base.
 * Habilidades normales y ocultas.
 * Cry / sonido.
-* Evoluciones simples y ramificadas.
+* Evoluciones.
 * Stats.
 * Movimientos principales.
 
 ---
 
-### Pokémon History MF
+## 4.3 Pokémon History MF
 
 Ubicación:
 
@@ -242,9 +263,9 @@ Responsabilidades:
 
 ---
 
-## 5. Estructura interna por aplicación
+## 5. Estructura interna
 
-Cada aplicación sigue una estructura Feature-Sliced adaptada:
+Cada aplicación usa una estructura Feature-Sliced adaptada:
 
 ```txt
 src/
@@ -258,30 +279,28 @@ src/
 
 ### Capas
 
-* `app`: providers, router, configuración global.
+* `app`: providers, router y configuración global.
 * `pages`: páginas de alto nivel.
 * `widgets`: bloques grandes de UI.
 * `features`: funcionalidades de usuario.
 * `entities`: dominio principal, API, mappers y componentes de entidad.
-* `shared`: utilidades internas reutilizables por app.
+* `shared`: utilidades internas reutilizables por aplicación.
+
+Se evitó mantener carpetas vacías o capas sin responsabilidad actual. La lógica transversal vive en `packages/shared` y la UI reutilizable vive en `packages/ui`.
 
 ---
 
-## 6. Shared package
+## 6. Packages compartidos
 
-Ubicación:
-
-```txt
-packages/shared
-```
+## 6.1 `packages/shared`
 
 Responsabilidades:
 
 * Tipos compartidos.
 * Constantes de `localStorage`.
 * Helpers de storage seguro.
-* Normalización de nombres.
-* Selección de imágenes Pokémon.
+* Normalización de nombres Pokémon.
+* Selección de imágenes oficiales.
 * Registro de visitas.
 * Lógica de último Pokémon visitado.
 * Tipos de historial.
@@ -291,28 +310,71 @@ Ejemplos:
 ```txt
 normalizePokemonName
 getPokemonImage
-savePokemonVisit
+registerPokemonVisit
 getPokemonHistory
+clearPokemonHistory
 setLastVisitedPokemon
 shouldShowLastVisitedToast
 dismissLastVisitedToast
 ```
 
+## 6.2 `packages/ui`
+
+Design System compartido entre aplicaciones.
+
+Componentes actuales:
+
+```txt
+Button
+Surface
+Skeleton
+PokemonPreviewCard
+```
+
+Responsabilidades:
+
+* Evitar duplicación visual.
+* Unificar cards de Pokémon entre Home y Search.
+* Unificar botones.
+* Unificar skeletons.
+* Unificar superficies visuales.
+* Reducir inconsistencias entre modo claro y oscuro.
+
+El Design System no reemplaza el Theme System. El Theme System decide y aplica el modo actual al documento; el Design System renderiza componentes consistentes según ese tema.
+
 ---
 
 ## 7. Instalación
 
-Desde la raíz del proyecto:
+Requisito recomendado:
+
+```txt
+Node 22
+```
+
+El proyecto incluye:
+
+```txt
+.nvmrc
+```
+
+Instalar dependencias:
 
 ```bash
 npm install
+```
+
+O instalación reproducible para CI:
+
+```bash
+npm ci
 ```
 
 ---
 
 ## 8. Scripts principales
 
-### Ejecutar Shell en modo desarrollo
+### Ejecutar Shell
 
 ```bash
 npm run dev:shell
@@ -330,21 +392,12 @@ npm run dev:detail
 npm run dev:history
 ```
 
----
-
-## 9. Ejecutar proyecto federado localmente
+### Ejecutar proyecto federado localmente
 
 Para Module Federation con Vite, los remotes deben compilarse y servirse en modo preview.
 
-Primero construir remotes:
-
 ```bash
 npm run build:remotes
-```
-
-Luego ejecutar el entorno federado:
-
-```bash
 npm run dev:federated
 ```
 
@@ -358,7 +411,7 @@ Pokémon History MF http://localhost:3002
 
 ---
 
-## 10. Build
+## 9. Build
 
 ### Build del Shell
 
@@ -384,9 +437,15 @@ npm run build:history
 npm run build:remotes
 ```
 
+### Build completo por workspaces
+
+```bash
+npm run build
+```
+
 ---
 
-## 11. Testing
+## 10. Testing
 
 El proyecto usa:
 
@@ -408,42 +467,42 @@ Modo watch:
 npm run test:watch
 ```
 
+Resultado validado:
+
+```txt
+Test Files  16 passed
+Tests       54 passed
+```
+
 ---
 
-## 12. Cobertura actual de tests
+## 11. Cobertura actual de tests
 
 ### Tests de lógica
 
 * `normalizePokemonName`
 * `getPokemonImage`
-* `savePokemonVisit`
-* `getPokemonHistory`
-* `clearPokemonHistory`
-* `setLastVisitedPokemon`
-* `shouldShowLastVisitedToast`
-* `dismissLastVisitedToast`
+* `pokemon-history.storage`
+* `last-visited.storage`
 * `validateLoginForm`
 * `mapTypeResponseToPokemonSummaries`
+* `searchPokemonByName`
 * `mapEvolutionChain`
 * `cleanFlavorText`
 
 ### Tests de componentes
 
+* `ProtectedRoute`
 * `PokemonCard`
 * `PokemonSearchButton`
+* `PokemonSearchModal`
+* `LastVisitedToast`
 * `ClearHistoryButton`
 * `PlayPokemonCryButton`
 
-Resultado validado:
-
-```txt
-Test Files  12 passed
-Tests       39 passed
-```
-
 ---
 
-## 13. Rutas
+## 12. Rutas
 
 ```txt
 /login
@@ -451,8 +510,6 @@ Tests       39 passed
 /pokemon/:pokemonId
 /history
 ```
-
-### Protección de rutas
 
 Las rutas principales están protegidas. Si no existe sesión, el usuario es redirigido a:
 
@@ -462,7 +519,7 @@ Las rutas principales están protegidas. Si no existe sesión, el usuario es red
 
 ---
 
-## 14. Login y sesión
+## 13. Login y sesión
 
 El login es mock.
 
@@ -473,17 +530,13 @@ Validaciones:
 * Password obligatorio.
 * Password mínimo de 6 caracteres.
 
-Cualquier email válido puede iniciar sesión.
+Cualquier email válido con password válido puede iniciar sesión.
 
-La sesión se almacena en:
-
-```txt
-localStorage
-```
+La sesión se almacena en `localStorage`.
 
 ---
 
-## 15. Home
+## 14. Home
 
 El Home muestra categorías Pokémon iniciales:
 
@@ -504,9 +557,15 @@ Endpoint usado:
 GET /type/{type}
 ```
 
+Las cards del Home usan el componente compartido:
+
+```txt
+PokemonPreviewCard
+```
+
 ---
 
-## 16. Buscador fullscreen
+## 15. Buscador fullscreen
 
 El buscador está implementado como modal fullscreen global dentro del Shell.
 
@@ -515,33 +574,59 @@ Características:
 * Apertura desde el header.
 * Cierre con botón.
 * Cierre con tecla Escape.
-* Infinite scroll.
-* Carga paginada de 30 en 30.
-* Búsqueda parcial por nombre.
+* Bloqueo de scroll del body mientras está abierto.
+* Restauración del foco al cerrar.
+* Focus inicial en el input.
+* Focus trap con Tab y Shift + Tab.
+* Infinite scroll cuando no hay texto de búsqueda.
+* Búsqueda exacta cuando el usuario escribe.
 * Resultados cacheados con TanStack Query.
 * Navegación al detalle al seleccionar un Pokémon.
 
-Endpoints usados:
+Endpoint de lista:
 
 ```txt
-GET /pokemon?limit=30&offset=0
-GET /pokemon?limit=1300&offset=0
+GET /pokemon?limit=30&offset={offset}
 ```
 
-La búsqueda parcial se realiza en frontend porque PokeAPI no provee búsqueda parcial nativa por nombre.
+Endpoint de búsqueda exacta:
+
+```txt
+GET /pokemon/{name}
+```
+
+La búsqueda usa coincidencia exacta según PokeAPI.
 
 Ejemplos:
 
 ```txt
-pika → pikachu
-char → charmander, charmeleon, charizard
-saur → bulbasaur, ivysaur, venusaur
-eev → eevee
+pikachu   → encuentra Pikachu
+pika      → no encuentra resultado
+charizard → encuentra Charizard
+char      → no encuentra resultado
+mr mime   → normaliza a mr-mime y encuentra Mr. Mime
 ```
 
 ---
 
-## 17. Detail MF: Pokédex premium
+## 16. Accesibilidad
+
+Mejoras implementadas:
+
+* Modal con `role="dialog"`.
+* `aria-modal="true"`.
+* `aria-labelledby`.
+* `aria-describedby`.
+* Cierre con Escape.
+* Focus trap.
+* Restauración del foco al cerrar.
+* Estados de carga y error con `aria-live` donde corresponde.
+* Botones con `aria-label` cuando aplica.
+* Mejoras de contraste en botones principales.
+
+---
+
+## 17. Detail MF: Pokédex
 
 El microfrontend de detalle combina tres recursos de PokeAPI:
 
@@ -634,32 +719,73 @@ Modo oscuro → Pokédex digital / scanner
 
 El tema se persiste en `localStorage`.
 
+La solución se divide en dos capas:
+
+```txt
+Theme System:
+- Aplica el tema al documento.
+- Sincroniza classList, data-theme y colorScheme.
+- Evita flash visual al recargar mediante script temprano en index.html.
+
+Design System:
+- Renderiza componentes consistentes según el tema activo.
+- Evita duplicación de estilos en cards, buttons, skeletons y surfaces.
+```
+
 ---
 
-## 21. Performance y UX
+## 21. Manejo de remotes
+
+El Shell carga los microfrontends remotos con:
+
+* `React.lazy`.
+* `Suspense`.
+* `ErrorBoundary`.
+
+Componentes reutilizables:
+
+```txt
+RemoteModuleSkeleton
+RemoteModuleErrorFallback
+```
+
+Esto permite que si un remote falla, el Shell siga funcionando y muestre un fallback controlado.
+
+---
+
+## 22. Performance y UX
 
 Mejoras implementadas:
 
+* Lazy loading de imágenes en listas, historial y evoluciones.
+* `decoding="async"` en imágenes.
 * Infinite scroll en buscador.
 * Cache de datos con TanStack Query.
-* Lazy loading en imágenes de listas, historial y evoluciones.
-* `decoding="async"` en imágenes.
-* `fetchPriority="high"` en imagen principal del detalle.
 * Skeleton states.
 * Empty states.
 * Error states.
 * Carga remota con `Suspense`.
-* Búsqueda parcial en frontend.
 * Normalización de nombres ingresados por usuario.
 * Separación de lógica en mappers y helpers testeables.
+* Reducción de CSS duplicado mediante Design System compartido.
+* SEO básico con meta description, manifest y robots.txt.
+
+Resultado PageSpeed validado en Home:
+
+```txt
+Performance      100
+Accessibility     91
+Best Practices   100
+SEO              100
+```
 
 ---
 
-## 22. Decisiones técnicas
+## 23. Decisiones técnicas
 
 ### React 18
 
-Se usa React 18 para mantener compatibilidad estable con Module Federation y el ecosistema actual del reto.
+Se usa React 18 para mantener compatibilidad estable con Module Federation y el ecosistema del reto.
 
 ### Vite
 
@@ -687,13 +813,17 @@ Se usa TanStack Query para:
 * Manejo de loading/error.
 * Stale time.
 
-### Shared package
+### `packages/shared`
 
-Se creó `packages/shared` para evitar duplicación de tipos y lógica común.
+Se creó `packages/shared` para evitar duplicación de tipos, storage y lógica común entre Shell y remotes.
+
+### `packages/ui`
+
+Se creó `packages/ui` como Design System compartido para reutilizar UI visual y reducir inconsistencias entre features.
 
 ---
 
-## 23. Variables de entorno del Shell
+## 24. Variables de entorno del Shell
 
 El Shell consume las URLs públicas de los remotes mediante variables de entorno de Vite.
 
@@ -719,9 +849,11 @@ VITE_HISTORY_REMOTE_URL=https://pokemon-history-mf.netlify.app/assets/remoteEntr
 
 Estas variables se inyectan en tiempo de build.
 
+El archivo `.env.local` está ignorado por Git.
+
 ---
 
-## 24. Despliegue en Netlify
+## 25. Despliegue en Netlify
 
 El proyecto fue desplegado en Netlify usando tres sitios independientes:
 
@@ -744,137 +876,57 @@ Pokémon History MF:
 https://pokemon-history-mf.netlify.app/
 ```
 
+Cada aplicación tiene su propio `netlify.toml`.
+
 ---
 
-## 25. Configuración de Netlify
-
-Cada aplicación tiene su propio archivo `netlify.toml`.
+## 26. Headers, caché y CORS
 
 ### Shell
 
-Archivo:
+El Shell define headers de seguridad básicos:
 
 ```txt
-apps/shell/netlify.toml
+X-Frame-Options
+X-Content-Type-Options
+Referrer-Policy
+Permissions-Policy
 ```
 
-Configuración:
+También define caché para assets y `index.html`.
 
-```toml
-[build]
-  command = "npm --workspace apps/shell run build"
-  publish = "apps/shell/dist"
+### Remotes
 
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-```
+Los remotes exponen `remoteEntry.js` y assets con headers CORS para permitir que el Shell los cargue dinámicamente.
+
+Además, `remoteEntry.js` usa política de no-cache para evitar que el Shell consuma una versión desactualizada del manifest remoto.
 
 ---
 
-### Pokémon Detail MF
+## 27. CI/CD
 
-Archivo:
+El proyecto incluye GitHub Actions:
 
 ```txt
-apps/pokemon-detail-mf/netlify.toml
+.github/workflows/ci.yml
 ```
 
-Configuración:
+El flujo valida:
 
-```toml
-[build]
-  command = "npm --workspace apps/pokemon-detail-mf run build"
-  publish = "apps/pokemon-detail-mf/dist"
-
-[[headers]]
-  for = "/assets/*"
-  [headers.values]
-    Access-Control-Allow-Origin = "*"
-    Access-Control-Allow-Methods = "GET, OPTIONS"
-    Access-Control-Allow-Headers = "Content-Type"
-
-[[headers]]
-  for = "/assets/remoteEntry.js"
-  [headers.values]
-    Access-Control-Allow-Origin = "*"
-    Access-Control-Allow-Methods = "GET, OPTIONS"
-    Access-Control-Allow-Headers = "Content-Type"
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+```txt
+npm ci
+npm test
+npm run build:shell
+npm run build:remotes
 ```
+
+Se usa Node 22, alineado con `.nvmrc`.
 
 ---
 
-### Pokémon History MF
+## 28. Validación final
 
-Archivo:
-
-```txt
-apps/pokemon-history-mf/netlify.toml
-```
-
-Configuración:
-
-```toml
-[build]
-  command = "npm --workspace apps/pokemon-history-mf run build"
-  publish = "apps/pokemon-history-mf/dist"
-
-[[headers]]
-  for = "/assets/*"
-  [headers.values]
-    Access-Control-Allow-Origin = "*"
-    Access-Control-Allow-Methods = "GET, OPTIONS"
-    Access-Control-Allow-Headers = "Content-Type"
-
-[[headers]]
-  for = "/assets/remoteEntry.js"
-  [headers.values]
-    Access-Control-Allow-Origin = "*"
-    Access-Control-Allow-Methods = "GET, OPTIONS"
-    Access-Control-Allow-Headers = "Content-Type"
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-```
-
----
-
-## 26. Consideraciones de CORS
-
-Los microfrontends remotos necesitan permitir que el Shell cargue dinámicamente el archivo `remoteEntry.js`.
-
-Por eso los sitios remotos incluyen headers CORS en Netlify:
-
-```txt
-Access-Control-Allow-Origin: *
-```
-
-Esto permite que el Shell pueda consumir:
-
-```txt
-https://pokemon-detail-mf.netlify.app/assets/remoteEntry.js
-https://pokemon-history-mf.netlify.app/assets/remoteEntry.js
-```
-
-desde:
-
-```txt
-https://pokemon-shell-mf.netlify.app/
-```
-
----
-
-## 27. Validación final
-
-La entrega fue validada con:
+Validado localmente con:
 
 ```bash
 npm test
@@ -885,70 +937,68 @@ npm run build:remotes
 Resultado:
 
 ```txt
-Test Files  12 passed
-Tests       39 passed
+Test Files  16 passed
+Tests       54 passed
 Build Shell OK
 Build Remotes OK
-Deploy Netlify OK
 ```
 
 ---
 
-## 28. Limitaciones conocidas
+## 29. Estado actual
+
+```txt
+Login mock                         ✅
+Rutas protegidas                   ✅
+Tema claro / oscuro                ✅
+Home por categorías                ✅
+Buscador fullscreen                ✅
+Búsqueda exacta                    ✅
+Infinite scroll                    ✅
+Modal accesible                    ✅
+Focus trap                         ✅
+Detail MF                          ✅
+Pokédex detail                     ✅
+Evolution chain                    ✅
+History MF                         ✅
+Historial persistente              ✅
+Toast último visitado              ✅
+Design System compartido           ✅
+Remote ErrorBoundary               ✅
+Remote fallback reutilizable       ✅
+Skeleton reutilizable              ✅
+SEO básico                         ✅
+Security headers                   ✅
+Tests de lógica                    ✅
+Tests de componentes               ✅
+GitHub Actions CI                  ✅
+Build Shell                        ✅
+Build Remotes                      ✅
+Deploy Netlify                     ✅
+```
+
+---
+
+## 30. Limitaciones conocidas
 
 * El login es mock y no usa backend real.
-* La búsqueda parcial se realiza en frontend porque PokeAPI no tiene búsqueda parcial nativa.
 * El historial se almacena en `localStorage`.
 * Las evoluciones se muestran como cards normalizadas, no como árbol visual con ramas conectadas.
 * No se implementó internacionalización completa.
-* No se implementó cobertura total de todos los componentes.
+* No se implementó virtualización para listas muy grandes.
+* No se implementó Storybook.
 
 ---
 
-## 29. Mejoras futuras
+## 31. Mejoras futuras
 
-* Agregar cobertura de tests para `LoginForm`.
-* Agregar tests para `PokemonSearchModal`.
+* Agregar Storybook para documentar el Design System.
 * Agregar tests de integración para flujo login → home → detalle → historial.
+* Agregar E2E con Playwright o Cypress.
 * Implementar árbol visual de evolución con conectores.
 * Agregar favoritos.
-* Agregar filtros por tipo en el buscador.
+* Agregar filtros por tipo.
 * Agregar ordenamiento por ID, nombre o tipo.
 * Agregar paginación virtualizada para listas grandes.
 * Agregar i18n.
-* Agregar CI/CD con ejecución de tests y build.
-* Agregar despliegue independiente por microfrontend.
-* Agregar Storybook para documentación visual de componentes.
-
----
-
-    ## 30. Explicacion del proyecto
-
-Este proyecto implementa una arquitectura frontend basada en microfrontends usando React, Vite y Module Federation. El Shell centraliza la experiencia global, autenticación, tema, rutas y búsqueda, mientras que los microfrontends de detalle e historial encapsulan funcionalidades específicas.
-
-El detalle Pokémon fue enriquecido como una Pokédex premium combinando datos de `pokemon`, `pokemon-species` y `evolution-chain`. Además, se implementaron persistencia de historial, toast de último visitado, búsqueda fullscreen con infinite scroll, optimización de imágenes y una estrategia de testing con Vitest y React Testing Library.
-
----
-
-## 31. Estado actual
-
-```txt
-Login mock                 ✅
-Rutas protegidas           ✅
-Tema claro / oscuro        ✅
-Home por categorías        ✅
-Buscador fullscreen        ✅
-Infinite scroll            ✅
-Búsqueda parcial           ✅
-Detail MF                  ✅
-Pokédex premium            ✅
-Evolution chain            ✅
-History MF                 ✅
-Historial persistente      ✅
-Toast último visitado      ✅
-Lazy loading imágenes      ✅
-Tests de lógica            ✅
-Tests de componentes       ✅
-Build Shell                ✅
-Build Remotes              ✅
-Deploy Netlify             ✅
+* Evaluar mayor aislamiento de estilos si el número de microfrontends crece, usando Tailwind prefix, CSS Modules, Shadow DOM o una estrategia CSS-in-JS.
