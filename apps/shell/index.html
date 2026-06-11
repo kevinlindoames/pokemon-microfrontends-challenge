@@ -12,12 +12,30 @@
 
     <meta name="theme-color" content="#0f172a" />
 
+    <script>
+      (function () {
+        try {
+          var storedTheme = localStorage.getItem('pokemon_theme');
+          var theme = storedTheme ? JSON.parse(storedTheme) : 'dark';
+
+          if (theme !== 'dark' && theme !== 'light') {
+            theme = 'dark';
+          }
+
+          document.documentElement.classList.toggle('dark', theme === 'dark');
+          document.documentElement.dataset.theme = theme;
+          document.documentElement.style.colorScheme = theme;
+        } catch {
+          document.documentElement.classList.add('dark');
+          document.documentElement.dataset.theme = 'dark';
+          document.documentElement.style.colorScheme = 'dark';
+        }
+      })();
+    </script>
+
     <link rel="manifest" href="/manifest.webmanifest" />
 
-    <meta
-      property="og:title"
-      content="Pokémon Microfrontends Challenge"
-    />
+    <meta property="og:title" content="Pokémon Microfrontends Challenge" />
     <meta
       property="og:description"
       content="Reto técnico frontend senior con React, Vite, TypeScript, Module Federation, PokeAPI, búsqueda exacta, historial persistente y tema claro/oscuro."

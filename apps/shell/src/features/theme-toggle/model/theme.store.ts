@@ -10,6 +10,7 @@ type ThemeState = {
 function applyThemeToDocument(theme: ThemeMode): void {
   document.documentElement.classList.toggle('dark', theme === 'dark');
   document.documentElement.dataset.theme = theme;
+  document.documentElement.style.colorScheme = theme;
 }
 
 export const useThemeStore = create<ThemeState>((set, get) => {

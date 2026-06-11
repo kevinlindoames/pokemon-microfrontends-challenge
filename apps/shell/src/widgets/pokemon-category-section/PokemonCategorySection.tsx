@@ -8,6 +8,9 @@ type PokemonCategorySectionProps = {
   description: string;
 };
 
+const pokemonGridClassName =
+  'grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5';
+
 export function PokemonCategorySection({
   type,
   label,
@@ -34,7 +37,7 @@ export function PokemonCategorySection({
       </div>
 
       {isLoading ? (
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
+        <div className={pokemonGridClassName}>
           {Array.from({ length: 10 }).map((_, index) => (
             <div
               className="h-52 animate-pulse rounded-3xl bg-slate-200 dark:bg-white/10"
@@ -51,7 +54,7 @@ export function PokemonCategorySection({
       ) : null}
 
       {data ? (
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
+        <div className={pokemonGridClassName}>
           {data.map((pokemon) => (
             <PokemonCard key={pokemon.id} pokemon={pokemon} />
           ))}
