@@ -922,7 +922,7 @@ Deploy Netlify OK
 
 ---
 
-## 30. Cómo explicar el proyecto
+    ## 30. Explicacion del proyecto
 
 Este proyecto implementa una arquitectura frontend basada en microfrontends usando React, Vite y Module Federation. El Shell centraliza la experiencia global, autenticación, tema, rutas y búsqueda, mientras que los microfrontends de detalle e historial encapsulan funcionalidades específicas.
 
