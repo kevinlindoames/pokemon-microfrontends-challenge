@@ -1,13 +1,40 @@
-
 # Pokémon Microfrontends Challenge
 
-Aplicación frontend construida con **React 18**, **TypeScript**, **Vite** y **Module Federation**, basada en PokeAPI.
+Aplicación frontend construida con **React 18**, **TypeScript**, **Vite** y **Module Federation**, basada en **PokeAPI**.
 
 El proyecto implementa una arquitectura de microfrontends con un **Shell principal** y dos microfrontends remotos:
 
-- **Shell**: autenticación, navegación, layout global, home, búsqueda fullscreen, tema claro/oscuro y toast global.
-- **Pokémon Detail MF**: detalle premium tipo Pokédex.
-- **Pokémon History MF**: historial persistente de Pokémon visitados.
+* **Shell**: autenticación, navegación, layout global, home, búsqueda fullscreen, tema claro/oscuro y toast global.
+* **Pokémon Detail MF**: detalle premium tipo Pokédex.
+* **Pokémon History MF**: historial persistente de Pokémon visitados.
+
+---
+
+## Demo en producción
+
+### Aplicación principal
+
+```txt
+https://pokemon-shell-mf.netlify.app/
+```
+
+### Microfrontends remotos
+
+```txt
+Detail MF:
+https://pokemon-detail-mf.netlify.app/assets/remoteEntry.js
+
+History MF:
+https://pokemon-history-mf.netlify.app/assets/remoteEntry.js
+```
+
+---
+
+## Repositorio
+
+```txt
+https://github.com/kevinlindoames/pokemon-microfrontends-challenge
+```
 
 ---
 
@@ -17,15 +44,16 @@ Este proyecto resuelve un reto técnico frontend orientado a una arquitectura mo
 
 La aplicación permite:
 
-- Iniciar sesión con un login mock.
-- Navegar por rutas protegidas.
-- Visualizar categorías Pokémon.
-- Buscar Pokémon en un modal fullscreen con infinite scroll.
-- Ver una ficha detallada tipo Pokédex.
-- Registrar historial de Pokémon visitados.
-- Mostrar un toast con el último Pokémon visitado al recargar.
-- Alternar entre modo claro y oscuro.
-- Ejecutar tests unitarios y de componentes.
+* Iniciar sesión con un login mock.
+* Navegar por rutas protegidas.
+* Visualizar categorías Pokémon.
+* Buscar Pokémon en un modal fullscreen con infinite scroll.
+* Ver una ficha detallada tipo Pokédex.
+* Registrar historial de Pokémon visitados.
+* Mostrar un toast con el último Pokémon visitado al recargar.
+* Alternar entre modo claro y oscuro.
+* Ejecutar tests unitarios y de componentes.
+* Desplegar Shell y remotes de forma independiente en Netlify.
 
 ---
 
@@ -33,25 +61,26 @@ La aplicación permite:
 
 ### Core
 
-- React 18
-- TypeScript
-- Vite
-- Module Federation con `@originjs/vite-plugin-federation`
-- React Router DOM
-- Tailwind CSS
-- Zustand
-- TanStack Query
-- Vitest
-- React Testing Library
-- PokeAPI
+* React 18
+* TypeScript
+* Vite
+* Module Federation con `@originjs/vite-plugin-federation`
+* React Router DOM
+* Tailwind CSS
+* Zustand
+* TanStack Query
+* Vitest
+* React Testing Library
+* PokeAPI
+* Netlify
 
 ### Arquitectura
 
-- Monorepo con npm workspaces
-- Microfrontends
-- Feature-Sliced Design adaptado
-- Shared package para lógica común
-- Separación por capas: `app`, `pages`, `widgets`, `features`, `entities`, `shared`
+* Monorepo con npm workspaces
+* Microfrontends
+* Feature-Sliced Design adaptado
+* Shared package para lógica común
+* Separación por capas: `app`, `pages`, `widgets`, `features`, `entities`, `shared`
 
 ---
 
@@ -66,10 +95,12 @@ pokemon-microfrontends-challenge/
 ├── packages/
 │   └── shared/
 ├── package.json
+├── package-lock.json
 ├── vitest.config.ts
 ├── vitest.setup.ts
-└── README.md
-````
+├── README.md
+└── .gitignore
+```
 
 ---
 
@@ -83,10 +114,16 @@ Ubicación:
 apps/shell
 ```
 
-Puerto:
+Puerto local:
 
 ```txt
 http://localhost:3000
+```
+
+Producción:
+
+```txt
+https://pokemon-shell-mf.netlify.app/
 ```
 
 Responsabilidades:
@@ -111,10 +148,22 @@ Ubicación:
 apps/pokemon-detail-mf
 ```
 
-Puerto:
+Puerto local:
 
 ```txt
 http://localhost:3001
+```
+
+Producción:
+
+```txt
+https://pokemon-detail-mf.netlify.app/
+```
+
+Remote entry:
+
+```txt
+https://pokemon-detail-mf.netlify.app/assets/remoteEntry.js
 ```
 
 Expone:
@@ -158,10 +207,22 @@ Ubicación:
 apps/pokemon-history-mf
 ```
 
-Puerto:
+Puerto local:
 
 ```txt
 http://localhost:3002
+```
+
+Producción:
+
+```txt
+https://pokemon-history-mf.netlify.app/
+```
+
+Remote entry:
+
+```txt
+https://pokemon-history-mf.netlify.app/assets/remoteEntry.js
 ```
 
 Expone:
@@ -271,7 +332,7 @@ npm run dev:history
 
 ---
 
-## 9. Ejecutar proyecto federado
+## 9. Ejecutar proyecto federado localmente
 
 Para Module Federation con Vite, los remotes deben compilarse y servirse en modo preview.
 
@@ -510,15 +571,13 @@ Con esto se construye una ficha tipo Pokédex más completa.
 
 PokeAPI representa las evoluciones como un árbol. Para mantener una UI simple y flexible, el árbol evolutivo se normaliza a una lista de cards.
 
-Esto permite soportar:
-
-### Evolución lineal
+Esto permite soportar evolución lineal:
 
 ```txt
 Pichu → Pikachu → Raichu
 ```
 
-### Evolución ramificada
+Y evolución ramificada:
 
 ```txt
 Eevee → Vaporeon / Jolteon / Flareon / Espeon / Umbreon / ...
@@ -634,7 +693,208 @@ Se creó `packages/shared` para evitar duplicación de tipos y lógica común.
 
 ---
 
-## 23. Limitaciones conocidas
+## 23. Variables de entorno del Shell
+
+El Shell consume las URLs públicas de los remotes mediante variables de entorno de Vite.
+
+Archivo de ejemplo:
+
+```txt
+apps/shell/.env.example
+```
+
+Contenido:
+
+```env
+VITE_DETAIL_REMOTE_URL=https://TU-DETAIL-MF.netlify.app/assets/remoteEntry.js
+VITE_HISTORY_REMOTE_URL=https://TU-HISTORY-MF.netlify.app/assets/remoteEntry.js
+```
+
+En Netlify, el sitio del Shell debe tener estas variables configuradas:
+
+```env
+VITE_DETAIL_REMOTE_URL=https://pokemon-detail-mf.netlify.app/assets/remoteEntry.js
+VITE_HISTORY_REMOTE_URL=https://pokemon-history-mf.netlify.app/assets/remoteEntry.js
+```
+
+Estas variables se inyectan en tiempo de build.
+
+---
+
+## 24. Despliegue en Netlify
+
+El proyecto fue desplegado en Netlify usando tres sitios independientes:
+
+```txt
+1. Shell
+2. Pokémon Detail MF
+3. Pokémon History MF
+```
+
+### Sitios desplegados
+
+```txt
+Shell:
+https://pokemon-shell-mf.netlify.app/
+
+Pokémon Detail MF:
+https://pokemon-detail-mf.netlify.app/
+
+Pokémon History MF:
+https://pokemon-history-mf.netlify.app/
+```
+
+---
+
+## 25. Configuración de Netlify
+
+Cada aplicación tiene su propio archivo `netlify.toml`.
+
+### Shell
+
+Archivo:
+
+```txt
+apps/shell/netlify.toml
+```
+
+Configuración:
+
+```toml
+[build]
+  command = "npm --workspace apps/shell run build"
+  publish = "apps/shell/dist"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+```
+
+---
+
+### Pokémon Detail MF
+
+Archivo:
+
+```txt
+apps/pokemon-detail-mf/netlify.toml
+```
+
+Configuración:
+
+```toml
+[build]
+  command = "npm --workspace apps/pokemon-detail-mf run build"
+  publish = "apps/pokemon-detail-mf/dist"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type"
+
+[[headers]]
+  for = "/assets/remoteEntry.js"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+```
+
+---
+
+### Pokémon History MF
+
+Archivo:
+
+```txt
+apps/pokemon-history-mf/netlify.toml
+```
+
+Configuración:
+
+```toml
+[build]
+  command = "npm --workspace apps/pokemon-history-mf run build"
+  publish = "apps/pokemon-history-mf/dist"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type"
+
+[[headers]]
+  for = "/assets/remoteEntry.js"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+```
+
+---
+
+## 26. Consideraciones de CORS
+
+Los microfrontends remotos necesitan permitir que el Shell cargue dinámicamente el archivo `remoteEntry.js`.
+
+Por eso los sitios remotos incluyen headers CORS en Netlify:
+
+```txt
+Access-Control-Allow-Origin: *
+```
+
+Esto permite que el Shell pueda consumir:
+
+```txt
+https://pokemon-detail-mf.netlify.app/assets/remoteEntry.js
+https://pokemon-history-mf.netlify.app/assets/remoteEntry.js
+```
+
+desde:
+
+```txt
+https://pokemon-shell-mf.netlify.app/
+```
+
+---
+
+## 27. Validación final
+
+La entrega fue validada con:
+
+```bash
+npm test
+npm run build:shell
+npm run build:remotes
+```
+
+Resultado:
+
+```txt
+Test Files  12 passed
+Tests       39 passed
+Build Shell OK
+Build Remotes OK
+Deploy Netlify OK
+```
+
+---
+
+## 28. Limitaciones conocidas
 
 * El login es mock y no usa backend real.
 * La búsqueda parcial se realiza en frontend porque PokeAPI no tiene búsqueda parcial nativa.
@@ -645,7 +905,7 @@ Se creó `packages/shared` para evitar duplicación de tipos y lógica común.
 
 ---
 
-## 24. Mejoras futuras
+## 29. Mejoras futuras
 
 * Agregar cobertura de tests para `LoginForm`.
 * Agregar tests para `PokemonSearchModal`.
@@ -662,7 +922,7 @@ Se creó `packages/shared` para evitar duplicación de tipos y lógica común.
 
 ---
 
-## 25. Cómo explicar el proyecto
+## 30. Cómo explicar el proyecto
 
 Este proyecto implementa una arquitectura frontend basada en microfrontends usando React, Vite y Module Federation. El Shell centraliza la experiencia global, autenticación, tema, rutas y búsqueda, mientras que los microfrontends de detalle e historial encapsulan funcionalidades específicas.
 
@@ -670,7 +930,7 @@ El detalle Pokémon fue enriquecido como una Pokédex premium combinando datos d
 
 ---
 
-## 26. Estado actual
+## 31. Estado actual
 
 ```txt
 Login mock                 ✅
@@ -691,4 +951,4 @@ Tests de lógica            ✅
 Tests de componentes       ✅
 Build Shell                ✅
 Build Remotes              ✅
-
+Deploy Netlify             ✅
