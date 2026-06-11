@@ -17,11 +17,11 @@ export function PokemonPreviewCard({
 
   return (
     <Link
-      className="group flex h-full min-h-[17rem] flex-col rounded-3xl border border-slate-200 bg-white p-4 shadow-lg shadow-slate-200/60 transition hover:-translate-y-1 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-red-300 dark:border-cyan-300/10 dark:bg-slate-950/70 dark:shadow-cyan-950/20 dark:focus:ring-cyan-300/40"
+      className="group flex h-full min-h-[17rem] flex-col rounded-3xl border border-[var(--card-border)] bg-[var(--card-bg)] p-4 shadow-lg shadow-[var(--card-shadow)] transition hover:-translate-y-1 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-red-300 dark:focus:ring-cyan-300/40"
       to={to}
       onClick={onClick}
     >
-      <div className="flex aspect-square shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-red-50 via-white to-sky-50 p-4 dark:from-slate-900 dark:via-slate-950 dark:to-cyan-950/40">
+      <div className="flex aspect-square shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--card-media-from)] via-[var(--card-media-via)] to-[var(--card-media-to)] p-4">
         {pokemon.image ? (
           <img
             alt={displayName}

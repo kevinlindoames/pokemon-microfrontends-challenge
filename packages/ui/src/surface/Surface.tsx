@@ -1,7 +1,6 @@
 import type { HTMLAttributes, ReactNode } from 'react';
 
 type SurfaceVariant = 'default' | 'soft' | 'danger' | 'transparent';
-
 type SurfaceRadius = 'xl' | '2xl' | '3xl';
 
 type SurfaceProps = HTMLAttributes<HTMLElement> & {
@@ -13,12 +12,11 @@ type SurfaceProps = HTMLAttributes<HTMLElement> & {
 
 const variantClassNames: Record<SurfaceVariant, string> = {
   default:
-    'border border-slate-200 bg-white shadow-xl shadow-slate-200/60 dark:border-cyan-300/10 dark:bg-slate-950/70 dark:shadow-cyan-950/20',
-  soft:
-    'border border-red-100 bg-white/90 shadow-2xl shadow-red-100/60 backdrop-blur dark:border-cyan-300/20 dark:bg-slate-950/80 dark:shadow-cyan-950/40',
+    'border border-[var(--surface-default-border)] bg-[var(--surface-default)] shadow-xl shadow-[var(--surface-default-shadow)]',
+  soft: 'border border-[var(--surface-soft-border)] bg-[var(--surface-soft)] shadow-2xl shadow-[var(--surface-soft-shadow)] backdrop-blur',
   danger:
-    'border border-red-200 bg-red-50 text-red-700 shadow-lg shadow-red-100/60 dark:border-red-400/20 dark:bg-red-500/10 dark:text-red-100 dark:shadow-red-950/20',
-  transparent: 'border border-transparent bg-transparent shadow-none',
+    'border border-[var(--surface-danger-border)] bg-[var(--surface-danger)] text-[var(--surface-danger-text)]',
+  transparent: 'border border-transparent bg-transparent',
 };
 
 const radiusClassNames: Record<SurfaceRadius, string> = {
@@ -40,8 +38,8 @@ export function Surface({
   return (
     <Component
       className={[
-        radiusClassNames[radius],
         variantClassNames[variant],
+        radiusClassNames[radius],
         className,
       ]
         .filter(Boolean)

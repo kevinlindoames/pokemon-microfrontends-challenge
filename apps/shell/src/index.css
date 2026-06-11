@@ -6,10 +6,50 @@
   font-family:
     Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color-scheme: light;
+
+  --surface-default: rgb(255 255 255);
+  --surface-default-border: rgb(226 232 240);
+  --surface-default-shadow: rgb(226 232 240 / 0.6);
+
+  --surface-soft: rgb(255 255 255 / 0.9);
+  --surface-soft-border: rgb(254 226 226);
+  --surface-soft-shadow: rgb(254 202 202 / 0.6);
+
+  --surface-danger: rgb(254 242 242);
+  --surface-danger-border: rgb(254 202 202);
+  --surface-danger-text: rgb(185 28 28);
+
+  --card-bg: rgb(255 255 255);
+  --card-border: rgb(226 232 240);
+  --card-shadow: rgb(226 232 240 / 0.6);
+
+  --card-media-from: rgb(254 242 242);
+  --card-media-via: rgb(255 255 255);
+  --card-media-to: rgb(240 249 255);
 }
 
 :root.dark {
   color-scheme: dark;
+
+  --surface-default: rgb(2 6 23 / 0.7);
+  --surface-default-border: rgb(103 232 249 / 0.1);
+  --surface-default-shadow: rgb(8 51 68 / 0.2);
+
+  --surface-soft: rgb(2 6 23 / 0.8);
+  --surface-soft-border: rgb(103 232 249 / 0.2);
+  --surface-soft-shadow: rgb(8 51 68 / 0.4);
+
+  --surface-danger: rgb(239 68 68 / 0.1);
+  --surface-danger-border: rgb(248 113 113 / 0.2);
+  --surface-danger-text: rgb(254 226 226);
+
+  --card-bg: rgb(2 6 23 / 0.7);
+  --card-border: rgb(103 232 249 / 0.1);
+  --card-shadow: rgb(8 51 68 / 0.2);
+
+  --card-media-from: rgb(15 23 42);
+  --card-media-via: rgb(2 6 23);
+  --card-media-to: rgb(8 51 68 / 0.4);
 }
 
 html {
