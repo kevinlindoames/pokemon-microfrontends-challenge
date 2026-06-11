@@ -1,0 +1,47 @@
+{
+  "name": "pokemon-microfrontends-challenge",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Technical challenge: React + Vite + Module Federation microfrontends with PokeAPI.",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:shell": "npm --workspace apps/shell run dev",
+    "dev:detail": "npm --workspace apps/pokemon-detail-mf run dev",
+    "dev:history": "npm --workspace apps/pokemon-history-mf run dev",
+    "build": "npm run build --workspaces",
+    "build:shell": "npm --workspace apps/shell run build",
+    "build:detail": "npm --workspace apps/pokemon-detail-mf run build",
+    "build:history": "npm --workspace apps/pokemon-history-mf run build",
+    "build:remotes": "concurrently \"npm run build:detail\" \"npm run build:history\"",
+    "preview:detail": "npm --workspace apps/pokemon-detail-mf run preview -- --host 0.0.0.0",
+    "preview:history": "npm --workspace apps/pokemon-history-mf run preview -- --host 0.0.0.0",
+    "preview:remotes": "concurrently \"npm run preview:detail\" \"npm run preview:history\"",
+    "dev:federated": "concurrently \"npm run preview:detail\" \"npm run preview:history\" \"npm run dev:shell\"",
+    "test": "vitest run",
+    "lint": "echo \"No lint configured yet\"",
+    "format": "prettier --write .",
+    "test:watch": "vitest"
+  },
+  "keywords": [
+    "react",
+    "vite",
+    "module-federation",
+    "microfrontends",
+    "pokemon",
+    "frontend-senior"
+  ],
+  "author": "Kevin Lindo",
+  "license": "MIT",
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "concurrently": "^9.2.1",
+    "jsdom": "^29.1.1",
+    "prettier": "^3.6.2",
+    "vitest": "^4.1.8"
+  }
+}
