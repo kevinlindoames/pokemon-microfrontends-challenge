@@ -1,4 +1,4 @@
-# Pokémon Microfrontends Challenge
+    # Pokémon Microfrontends Challenge
 
 Aplicación frontend construida con **React 18**, **TypeScript**, **Vite** y **Module Federation**, basada en **PokeAPI**.
 
