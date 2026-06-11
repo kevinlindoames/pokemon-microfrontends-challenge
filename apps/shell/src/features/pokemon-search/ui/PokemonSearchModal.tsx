@@ -14,19 +14,19 @@ function PokemonSearchCard({
 }) {
   return (
     <Link
-      className="group rounded-3xl border border-slate-200 bg-white p-4 shadow-lg shadow-slate-200/60 transition hover:-translate-y-1 hover:shadow-xl dark:border-cyan-300/10 dark:bg-slate-950/80 dark:shadow-cyan-950/20"
+      className="group rounded-3xl border border-slate-200 bg-white p-4 shadow-lg shadow-slate-200/60 transition hover:-translate-y-1 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-red-300 dark:border-cyan-300/10 dark:bg-slate-950/80 dark:shadow-cyan-950/20 dark:focus:ring-cyan-300/40"
       to={`/pokemon/${pokemon.id}`}
       onClick={onSelect}
     >
       <div className="flex h-36 items-center justify-center rounded-2xl bg-gradient-to-br from-red-50 via-white to-sky-50 p-4 dark:from-slate-900 dark:via-slate-950 dark:to-cyan-950/40">
         {pokemon.image ? (
-         <img
-  alt={pokemon.name}
-  className="h-full w-full object-contain transition group-hover:scale-110"
-  decoding="async"
-  loading="lazy"
-  src={pokemon.image}
-/>
+          <img
+            alt={pokemon.name}
+            className="h-full w-full object-contain transition group-hover:scale-110"
+            decoding="async"
+            loading="lazy"
+            src={pokemon.image}
+          />
         ) : (
           <span className="text-sm font-bold text-slate-400">No image</span>
         )}
@@ -43,13 +43,31 @@ function PokemonSearchCard({
   );
 }
 
+function getFocusableElements(container: HTMLElement): HTMLElement[] {
+  return Array.from(
+    container.querySelectorAll<HTMLElement>(
+      [
+        'a[href]',
+        'button:not([disabled])',
+        'textarea:not([disabled])',
+        'input:not([disabled])',
+        'select:not([disabled])',
+        '[tabindex]:not([tabindex="-1"])',
+      ].join(','),
+    ),
+  ).filter((element) => !element.hasAttribute('disabled'));
+}
+
 export function PokemonSearchModal() {
   const isOpen = usePokemonSearchStore((state) => state.isOpen);
   const closeSearch = usePokemonSearchStore((state) => state.closeSearch);
 
   const [searchValue, setSearchValue] = useState('');
 
+  const modalRef = useRef<HTMLElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const previousFocusedElementRef = useRef<HTMLElement | null>(null);
 
   const infiniteQuery = usePokemonInfiniteQuery();
   const searchQuery = useSearchPokemonQuery(searchValue);
@@ -60,23 +78,85 @@ export function PokemonSearchModal() {
   );
 
   const isSearching = searchValue.trim().length > 0;
-  const searchResults = searchQuery.data ?? [];
+  const exactSearchResult = searchQuery.data;
 
   useEffect(() => {
     if (!isOpen) {
       return;
     }
 
-    function handleEscape(event: KeyboardEvent) {
+    previousFocusedElementRef.current =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+
+    const originalBodyOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    window.setTimeout(() => {
+      inputRef.current?.focus();
+    }, 0);
+
+    return () => {
+      document.body.style.overflow = originalBodyOverflow;
+      previousFocusedElementRef.current?.focus();
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
       if (event.key === 'Escape') {
         closeSearch();
+        return;
+      }
+
+      if (event.key !== 'Tab') {
+        return;
+      }
+
+      const modal = modalRef.current;
+
+      if (!modal) {
+        return;
+      }
+
+      const focusableElements = getFocusableElements(modal);
+
+      if (focusableElements.length === 0) {
+        event.preventDefault();
+        return;
+      }
+
+      const firstFocusableElement = focusableElements[0];
+      const lastFocusableElement =
+        focusableElements[focusableElements.length - 1];
+
+      if (
+        event.shiftKey &&
+        document.activeElement === firstFocusableElement
+      ) {
+        event.preventDefault();
+        lastFocusableElement.focus();
+        return;
+      }
+
+      if (
+        !event.shiftKey &&
+        document.activeElement === lastFocusableElement
+      ) {
+        event.preventDefault();
+        firstFocusableElement.focus();
       }
     }
 
-    document.addEventListener('keydown', handleEscape);
+    document.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener('keydown', handleKeyDown);
     };
   }, [closeSearch, isOpen]);
 
@@ -131,7 +211,14 @@ export function PokemonSearchModal() {
   }
 
   return (
-    <section className="fixed inset-0 z-[60] overflow-y-auto bg-white/95 p-6 backdrop-blur-xl dark:bg-slate-950/95">
+    <section
+      ref={modalRef}
+      aria-describedby="pokemon-search-description"
+      aria-labelledby="pokemon-search-title"
+      aria-modal="true"
+      className="fixed inset-0 z-[60] overflow-y-auto bg-white/95 p-6 backdrop-blur-xl dark:bg-slate-950/95"
+      role="dialog"
+    >
       <div className="mx-auto max-w-6xl">
         <header className="sticky top-0 z-10 -mx-6 border-b border-slate-200 bg-white/90 px-6 py-5 backdrop-blur-xl dark:border-cyan-300/10 dark:bg-slate-950/90">
           <div className="mx-auto flex max-w-6xl flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -140,13 +227,17 @@ export function PokemonSearchModal() {
                 Pokédex Search
               </p>
 
-              <h2 className="mt-2 text-3xl font-black text-slate-950 dark:text-white">
+              <h2
+                id="pokemon-search-title"
+                className="mt-2 text-3xl font-black text-slate-950 dark:text-white"
+              >
                 Buscar Pokémon
               </h2>
             </div>
 
             <button
-              className="rounded-full bg-slate-950 px-5 py-3 font-black text-white shadow-lg shadow-slate-900/20 transition hover:bg-red-500 dark:bg-cyan-100 dark:text-slate-950 dark:hover:bg-cyan-200"
+              aria-label="Cerrar buscador de Pokémon"
+              className="rounded-full bg-slate-950 px-5 py-3 font-black text-white shadow-lg shadow-slate-900/20 transition hover:bg-red-500 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-cyan-100 dark:text-slate-950 dark:hover:bg-cyan-200 dark:focus:ring-cyan-300/40"
               type="button"
               onClick={closeSearch}
             >
@@ -156,12 +247,23 @@ export function PokemonSearchModal() {
 
           <div className="mx-auto mt-5 max-w-6xl">
             <input
-              autoFocus
-              className="w-full rounded-[2rem] border border-slate-200 bg-white px-6 py-5 text-lg font-bold text-slate-950 outline-none shadow-lg shadow-slate-200/60 transition placeholder:text-slate-400 focus:border-red-300 dark:border-cyan-300/20 dark:bg-slate-900 dark:text-white dark:shadow-cyan-950/20 dark:focus:border-cyan-300"
-              placeholder="Busca por nombre: pika, char, saur, eevee..."
+              ref={inputRef}
+              aria-label="Buscar Pokémon por nombre exacto"
+              autoComplete="off"
+              className="w-full rounded-[2rem] border border-slate-200 bg-white px-6 py-5 text-lg font-bold text-slate-950 outline-none shadow-lg shadow-slate-200/60 transition placeholder:text-slate-400 focus:border-red-300 focus:ring-4 focus:ring-red-100 dark:border-cyan-300/20 dark:bg-slate-900 dark:text-white dark:shadow-cyan-950/20 dark:focus:border-cyan-300 dark:focus:ring-cyan-300/10"
+              placeholder="Busca por nombre exacto: pikachu, charizard, mr mime..."
               value={searchValue}
               onChange={(event) => setSearchValue(event.target.value)}
             />
+
+            <p
+              id="pokemon-search-description"
+              className="mt-3 text-sm font-semibold text-slate-500 dark:text-slate-400"
+            >
+              La búsqueda usa coincidencia exacta según PokeAPI. Por ejemplo,
+              escribe <strong>pikachu</strong>, no <strong>pika</strong>.
+              Puedes cerrar este modal con la tecla Escape.
+            </p>
           </div>
         </header>
 
@@ -169,23 +271,26 @@ export function PokemonSearchModal() {
           {isSearching ? (
             <>
               {searchQuery.isFetching ? (
-                <div className="rounded-[2rem] border border-slate-200 bg-white p-8 text-center font-black text-slate-500 dark:border-cyan-300/10 dark:bg-slate-950/70 dark:text-slate-400">
+                <div
+                  aria-live="polite"
+                  className="rounded-[2rem] border border-slate-200 bg-white p-8 text-center font-black text-slate-500 dark:border-cyan-300/10 dark:bg-slate-950/70 dark:text-slate-400"
+                >
                   Buscando Pokémon...
                 </div>
-              ) : searchResults.length > 0 ? (
+              ) : exactSearchResult ? (
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                  {searchResults.map((pokemon) => (
-                    <PokemonSearchCard
-                      key={pokemon.id}
-                      pokemon={pokemon}
-                      onSelect={closeSearch}
-                    />
-                  ))}
+                  <PokemonSearchCard
+                    pokemon={exactSearchResult}
+                    onSelect={closeSearch}
+                  />
                 </div>
               ) : (
-                <div className="rounded-[2rem] border border-dashed border-slate-300 bg-slate-50 p-8 text-center dark:border-cyan-300/20 dark:bg-cyan-300/5">
+                <div
+                  aria-live="polite"
+                  className="rounded-[2rem] border border-dashed border-slate-300 bg-slate-50 p-8 text-center dark:border-cyan-300/20 dark:bg-cyan-300/5"
+                >
                   <p className="text-sm font-black uppercase tracking-[0.35em] text-red-500 dark:text-cyan-300">
-                    Empty result
+                    Exact match not found
                   </p>
 
                   <h3 className="mt-3 text-3xl font-black text-slate-950 dark:text-white">
@@ -193,8 +298,9 @@ export function PokemonSearchModal() {
                   </h3>
 
                   <p className="mt-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
-                    Prueba con una parte del nombre como pika, char, saur o
-                    eevee.
+                    La búsqueda debe coincidir exactamente con el nombre usado
+                    por PokeAPI. Ejemplos válidos: pikachu, charizard,
+                    bulbasaur, mr mime.
                   </p>
                 </div>
               )}
@@ -202,7 +308,10 @@ export function PokemonSearchModal() {
           ) : (
             <>
               {infiniteQuery.isLoading ? (
-                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                <div
+                  aria-label="Cargando lista inicial de Pokémon"
+                  className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
+                >
                   {Array.from({ length: 8 }).map((_, index) => (
                     <div
                       className="h-64 animate-pulse rounded-3xl bg-slate-200 dark:bg-white/10"
@@ -211,7 +320,10 @@ export function PokemonSearchModal() {
                   ))}
                 </div>
               ) : infiniteQuery.isError ? (
-                <div className="rounded-[2rem] border border-red-200 bg-red-50 p-8 text-center text-red-700 dark:border-red-400/20 dark:bg-red-500/10 dark:text-red-100">
+                <div
+                  aria-live="polite"
+                  className="rounded-[2rem] border border-red-200 bg-red-50 p-8 text-center text-red-700 dark:border-red-400/20 dark:bg-red-500/10 dark:text-red-100"
+                >
                   No se pudo cargar la lista de Pokémon.
                 </div>
               ) : (
@@ -229,7 +341,10 @@ export function PokemonSearchModal() {
                   <div ref={sentinelRef} className="h-12" />
 
                   {infiniteQuery.isFetchingNextPage && (
-                    <p className="py-6 text-center text-sm font-black uppercase tracking-[0.25em] text-red-500 dark:text-cyan-300">
+                    <p
+                      aria-live="polite"
+                      className="py-6 text-center text-sm font-black uppercase tracking-[0.25em] text-red-500 dark:text-cyan-300"
+                    >
                       Loading more Pokémon...
                     </p>
                   )}

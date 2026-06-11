@@ -4,14 +4,14 @@ import {
   type PokemonSummary,
   type PokemonTypeName,
 } from '@pokemon-challenge/shared';
-import { API_CONFIG } from '../../../shared/config/api.config';
 import { httpGet } from '../../../shared/api/http-client';
+import { API_CONFIG } from '../../../shared/config/api.config';
+import { mapTypeResponseToPokemonSummaries } from '../lib/pokemon-category.mapper';
 import type {
   PokeApiPokemonDetailResponse,
   PokeApiPokemonListResponse,
   PokeApiTypeResponse,
 } from './pokeapi.types';
-import { mapTypeResponseToPokemonSummaries } from '../lib/pokemon-category.mapper';
 
 function getPokemonIdFromUrl(url: string): string {
   const urlParts = url.split('/').filter(Boolean);
@@ -56,22 +56,6 @@ export async function getPokemonPage(params: {
     }),
     nextOffset: response.next ? params.offset + params.limit : null,
   };
-}
-
-export async function getAllPokemonForSearch(): Promise<PokemonSummary[]> {
-  const response = await httpGet<PokeApiPokemonListResponse>(
-    `${API_CONFIG.pokeApiBaseUrl}/pokemon?limit=1300&offset=0`,
-  );
-
-  return response.results.map((pokemon) => {
-    const id = getPokemonIdFromUrl(pokemon.url);
-
-    return {
-      id,
-      name: pokemon.name,
-      image: getOfficialArtworkUrl(id),
-    };
-  });
 }
 
 export async function searchPokemonByName(
