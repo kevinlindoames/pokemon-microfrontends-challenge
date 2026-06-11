@@ -11,11 +11,9 @@ type SurfaceProps = HTMLAttributes<HTMLElement> & {
 };
 
 const variantClassNames: Record<SurfaceVariant, string> = {
-  default:
-    'border border-[var(--surface-default-border)] bg-[var(--surface-default)] shadow-xl shadow-[var(--surface-default-shadow)]',
-  soft: 'border border-[var(--surface-soft-border)] bg-[var(--surface-soft)] shadow-2xl shadow-[var(--surface-soft-shadow)] backdrop-blur',
-  danger:
-    'border border-[var(--surface-danger-border)] bg-[var(--surface-danger)] text-[var(--surface-danger-text)]',
+  default: 'ui-surface-default border',
+  soft: 'ui-surface-soft border',
+  danger: 'ui-surface-danger border',
   transparent: 'border border-transparent bg-transparent',
 };
 

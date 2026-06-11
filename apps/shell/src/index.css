@@ -7,49 +7,155 @@
     Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color-scheme: light;
 
-  --surface-default: rgb(255 255 255);
-  --surface-default-border: rgb(226 232 240);
-  --surface-default-shadow: rgb(226 232 240 / 0.6);
+  /* App visual identity */
+  --app-accent-primary: rgb(239 68 68);
+  --app-accent-secondary: rgb(253 224 71);
+  --app-accent-tertiary: rgb(56 189 248);
 
-  --surface-soft: rgb(255 255 255 / 0.9);
-  --surface-soft-border: rgb(254 226 226);
-  --surface-soft-shadow: rgb(254 202 202 / 0.6);
+  --app-focus-ring: rgb(252 165 165);
 
-  --surface-danger: rgb(254 242 242);
+  /* Main surfaces */
+  --surface-bg: rgb(255 255 255 / 0.9);
+  --surface-bg-strong: rgb(255 255 255 / 0.95);
+  --surface-bg-solid: rgb(255 255 255);
+  --surface-border: rgb(254 226 226);
+  --surface-border-muted: rgb(226 232 240);
+  --surface-shadow: rgb(254 202 202 / 0.6);
+
+  /* Danger surfaces */
+  --surface-danger-bg: rgb(254 242 242);
   --surface-danger-border: rgb(254 202 202);
   --surface-danger-text: rgb(185 28 28);
 
-  --card-bg: rgb(255 255 255);
-  --card-border: rgb(226 232 240);
+  /* Text */
+  --text-primary: rgb(2 6 23);
+  --text-secondary: rgb(100 116 139);
+  --text-accent: rgb(220 38 38);
+  --text-inverted: rgb(255 255 255);
+
+  /* Media / image containers */
+  --media-gradient-from: rgb(254 242 242);
+  --media-gradient-via: rgb(255 255 255);
+  --media-gradient-to: rgb(240 249 255);
+  --media-gradient: linear-gradient(
+    to bottom right,
+    var(--media-gradient-from),
+    var(--media-gradient-via),
+    var(--media-gradient-to)
+  );
+
+  /* Top decorative gradient */
+  --brand-gradient-from: rgb(239 68 68);
+  --brand-gradient-via: rgb(253 224 71);
+  --brand-gradient-to: rgb(56 189 248);
+  --brand-gradient: linear-gradient(
+    to right,
+    var(--brand-gradient-from),
+    var(--brand-gradient-via),
+    var(--brand-gradient-to)
+  );
+
+  /* Cards */
+  --card-bg: var(--surface-bg-solid);
+  --card-border: var(--surface-border-muted);
   --card-shadow: rgb(226 232 240 / 0.6);
 
-  --card-media-from: rgb(254 242 242);
-  --card-media-via: rgb(255 255 255);
-  --card-media-to: rgb(240 249 255);
+  /* Buttons */
+  --button-primary-bg: rgb(185 28 28);
+  --button-primary-bg-hover: rgb(153 27 27);
+  --button-primary-text: rgb(255 255 255);
+  --button-primary-shadow: rgb(185 28 28 / 0.2);
+
+  --button-secondary-bg: rgb(255 255 255);
+  --button-secondary-bg-hover: rgb(241 245 249);
+  --button-secondary-border: rgb(226 232 240);
+  --button-secondary-text: rgb(51 65 85);
+
+  --button-danger-bg: rgb(185 28 28);
+  --button-danger-bg-hover: rgb(153 27 27);
+  --button-danger-text: rgb(255 255 255);
+  --button-danger-shadow: rgb(185 28 28 / 0.2);
+
+  --button-ghost-bg: transparent;
+  --button-ghost-bg-hover: rgb(254 242 242);
+  --button-ghost-text: rgb(185 28 28);
 }
 
 :root.dark {
   color-scheme: dark;
 
-  --surface-default: rgb(2 6 23 / 0.7);
-  --surface-default-border: rgb(103 232 249 / 0.1);
-  --surface-default-shadow: rgb(8 51 68 / 0.2);
+  /* App visual identity */
+  --app-accent-primary: rgb(239 68 68);
+  --app-accent-secondary: rgb(103 232 249);
+  --app-accent-tertiary: rgb(59 130 246);
 
-  --surface-soft: rgb(2 6 23 / 0.8);
-  --surface-soft-border: rgb(103 232 249 / 0.2);
-  --surface-soft-shadow: rgb(8 51 68 / 0.4);
+  --app-focus-ring: rgb(103 232 249 / 0.4);
 
-  --surface-danger: rgb(239 68 68 / 0.1);
+  /* Main surfaces */
+  --surface-bg: rgb(2 6 23 / 0.8);
+  --surface-bg-strong: rgb(2 6 23 / 0.95);
+  --surface-bg-solid: rgb(2 6 23 / 0.7);
+  --surface-border: rgb(103 232 249 / 0.2);
+  --surface-border-muted: rgb(103 232 249 / 0.1);
+  --surface-shadow: rgb(8 51 68 / 0.4);
+
+  /* Danger surfaces */
+  --surface-danger-bg: rgb(239 68 68 / 0.1);
   --surface-danger-border: rgb(248 113 113 / 0.2);
   --surface-danger-text: rgb(254 226 226);
 
-  --card-bg: rgb(2 6 23 / 0.7);
-  --card-border: rgb(103 232 249 / 0.1);
+  /* Text */
+  --text-primary: rgb(255 255 255);
+  --text-secondary: rgb(148 163 184);
+  --text-accent: rgb(103 232 249);
+  --text-inverted: rgb(2 6 23);
+
+  /* Media / image containers */
+  --media-gradient-from: rgb(15 23 42);
+  --media-gradient-via: rgb(2 6 23);
+  --media-gradient-to: rgb(8 51 68 / 0.4);
+  --media-gradient: linear-gradient(
+    to bottom right,
+    var(--media-gradient-from),
+    var(--media-gradient-via),
+    var(--media-gradient-to)
+  );
+
+  /* Top decorative gradient */
+  --brand-gradient-from: rgb(239 68 68);
+  --brand-gradient-via: rgb(103 232 249);
+  --brand-gradient-to: rgb(59 130 246);
+  --brand-gradient: linear-gradient(
+    to right,
+    var(--brand-gradient-from),
+    var(--brand-gradient-via),
+    var(--brand-gradient-to)
+  );
+
+  /* Cards */
+  --card-bg: var(--surface-bg-solid);
+  --card-border: var(--surface-border-muted);
   --card-shadow: rgb(8 51 68 / 0.2);
 
-  --card-media-from: rgb(15 23 42);
-  --card-media-via: rgb(2 6 23);
-  --card-media-to: rgb(8 51 68 / 0.4);
+  /* Buttons */
+  --button-primary-bg: rgb(207 250 254);
+  --button-primary-bg-hover: rgb(165 243 252);
+  --button-primary-text: rgb(2 6 23);
+  --button-primary-shadow: rgb(8 51 68 / 0.3);
+
+  --button-secondary-bg: rgb(103 232 249 / 0.1);
+  --button-secondary-bg-hover: rgb(103 232 249 / 0.2);
+  --button-secondary-border: rgb(103 232 249 / 0.2);
+  --button-secondary-text: rgb(207 250 254);
+
+  --button-danger-bg: rgb(185 28 28);
+  --button-danger-bg-hover: rgb(153 27 27);
+  --button-danger-text: rgb(255 255 255);
+  --button-danger-shadow: rgb(185 28 28 / 0.2);
+
+  --button-ghost-bg: transparent;
+  --button-ghost-bg-hover: rgb(103 232 249 / 0.1);
+  --button-ghost-text: rgb(207 250 254);
 }
 
 html {
@@ -63,4 +169,99 @@ body {
 
 #root {
   min-height: 100vh;
+}
+
+@layer components {
+  .ui-surface-default {
+    border-color: var(--surface-border-muted);
+    background-color: var(--surface-bg-solid);
+    box-shadow:
+      0 20px 25px -5px var(--card-shadow),
+      0 8px 10px -6px var(--card-shadow);
+  }
+
+  .ui-surface-soft {
+    border-color: var(--surface-border);
+    background-color: var(--surface-bg);
+    box-shadow: 0 25px 50px -12px var(--surface-shadow);
+    backdrop-filter: blur(8px);
+  }
+
+  .ui-surface-danger {
+    border-color: var(--surface-danger-border);
+    background-color: var(--surface-danger-bg);
+    color: var(--surface-danger-text);
+  }
+
+  .ui-card {
+    border-color: var(--card-border);
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+    box-shadow:
+      0 10px 15px -3px var(--card-shadow),
+      0 4px 6px -4px var(--card-shadow);
+  }
+
+  .ui-card-media {
+    background-image: var(--media-gradient);
+  }
+
+  .ui-text-primary {
+    color: var(--text-primary);
+  }
+
+  .ui-text-secondary {
+    color: var(--text-secondary);
+  }
+
+  .ui-text-accent {
+    color: var(--text-accent);
+  }
+
+  .ui-focus-ring {
+    --tw-ring-color: var(--app-focus-ring);
+  }
+
+  .ui-button-primary {
+    background-color: var(--button-primary-bg);
+    color: var(--button-primary-text);
+    box-shadow:
+      0 10px 15px -3px var(--button-primary-shadow),
+      0 4px 6px -4px var(--button-primary-shadow);
+  }
+
+  .ui-button-primary:hover {
+    background-color: var(--button-primary-bg-hover);
+  }
+
+  .ui-button-secondary {
+    border-color: var(--button-secondary-border);
+    background-color: var(--button-secondary-bg);
+    color: var(--button-secondary-text);
+  }
+
+  .ui-button-secondary:hover {
+    background-color: var(--button-secondary-bg-hover);
+  }
+
+  .ui-button-danger {
+    background-color: var(--button-danger-bg);
+    color: var(--button-danger-text);
+    box-shadow:
+      0 10px 15px -3px var(--button-danger-shadow),
+      0 4px 6px -4px var(--button-danger-shadow);
+  }
+
+  .ui-button-danger:hover {
+    background-color: var(--button-danger-bg-hover);
+  }
+
+  .ui-button-ghost {
+    background-color: var(--button-ghost-bg);
+    color: var(--button-ghost-text);
+  }
+
+  .ui-button-ghost:hover {
+    background-color: var(--button-ghost-bg-hover);
+  }
 }
