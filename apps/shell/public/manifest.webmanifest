@@ -1,0 +1,10 @@
+{
+  "name": "Pokémon Microfrontends Challenge",
+  "short_name": "Pokédex MF",
+  "description": "Aplicación Pokédex construida con React, TypeScript, Vite y Module Federation.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "lang": "es"
+}
