@@ -21,42 +21,44 @@ export function PokemonDetailCard({ pokemon }: PokemonDetailCardProps) {
 
       <div className="grid gap-8 p-8 xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
         <aside className="space-y-5">
-          <div className="relative flex min-h-[28rem] flex-col items-center justify-center overflow-hidden rounded-[2rem] border border-slate-200 bg-gradient-to-br from-red-50 via-white to-sky-50 p-8 dark:border-cyan-300/10 dark:from-slate-900 dark:via-slate-950 dark:to-cyan-950/40">
-            <div className="absolute left-6 top-6 flex gap-2">
-              <span className="h-3 w-3 rounded-full bg-red-500" />
-              <span className="h-3 w-3 rounded-full bg-yellow-300" />
-              <span className="h-3 w-3 rounded-full bg-sky-400" />
-            </div>
+          <div className="relative flex min-h-[22rem] flex-col items-center justify-center overflow-hidden rounded-[2rem] border border-slate-200 bg-gradient-to-br from-red-50 via-white to-sky-50 p-5 dark:border-cyan-300/10 dark:from-slate-900 dark:via-slate-950 dark:to-cyan-950/40 sm:min-h-[26rem] sm:p-8">
+  <div className="absolute left-5 top-5 flex gap-2 sm:left-6 sm:top-6">
+    <span className="h-3 w-3 rounded-full bg-red-500" />
+    <span className="h-3 w-3 rounded-full bg-yellow-300" />
+    <span className="h-3 w-3 rounded-full bg-sky-400" />
+  </div>
 
-            <p className="mb-4 text-xs font-black uppercase tracking-[0.35em] text-red-500 dark:text-cyan-300">
-              #{pokemon.id}
-            </p>
+  <p className="mb-4 text-xs font-black uppercase tracking-[0.35em] text-red-500 dark:text-cyan-300">
+    #{pokemon.id}
+  </p>
 
-            <img
-              alt={pokemon.name}
-              className="h-80 w-full object-contain drop-shadow-2xl"
-              decoding="async"
-              loading="eager"
-              src={pokemon.image}
-            />
+  <div className="flex h-56 w-full max-w-[18rem] items-center justify-center sm:h-72 sm:max-w-[24rem]">
+    <img
+      alt={pokemon.name}
+      className="max-h-full max-w-full object-contain drop-shadow-2xl"
+      decoding="async"
+      loading="eager"
+      src={pokemon.image}
+    />
+  </div>
 
-            <div className="mt-6 text-center">
-              <h2 className="text-5xl font-black capitalize text-slate-950 dark:text-white">
-                {formatPokemonName(pokemon.name)}
-              </h2>
+  <div className="mt-6 max-w-full text-center">
+    <h2 className="break-words text-3xl font-black capitalize leading-tight text-slate-950 dark:text-white sm:text-5xl">
+      {pokemon.name}
+    </h2>
 
-              <div className="mt-5 flex flex-wrap justify-center gap-2">
-                {pokemon.types.map((type) => (
-                  <span
-                    className="rounded-full border border-red-200 bg-red-50 px-4 py-2 text-sm font-black capitalize text-red-700 dark:border-cyan-300/20 dark:bg-cyan-300/10 dark:text-cyan-100"
-                    key={type}
-                  >
-                    {type}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
+    <div className="mt-5 flex flex-wrap justify-center gap-2">
+      {pokemon.types.map((type) => (
+        <span
+          className="rounded-full border border-red-200 bg-red-50 px-4 py-2 text-sm font-black capitalize text-red-700 dark:border-cyan-300/20 dark:bg-cyan-300/10 dark:text-cyan-100"
+          key={type}
+        >
+          {type}
+        </span>
+      ))}
+    </div>
+  </div>
+</div>
 
           <div className="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-lg shadow-slate-200/60 dark:border-cyan-300/10 dark:bg-slate-950/70 dark:shadow-cyan-950/20">
             <p className="text-xs font-black uppercase tracking-[0.35em] text-red-500 dark:text-cyan-300">
