@@ -339,8 +339,48 @@ Responsabilidades:
 * Unificar skeletons.
 * Unificar superficies visuales.
 * Reducir inconsistencias entre modo claro y oscuro.
+* Centralizar la identidad visual mediante tokens CSS y clases semánticas reutilizables.
 
 El Design System no reemplaza el Theme System. El Theme System decide y aplica el modo actual al documento; el Design System renderiza componentes consistentes según ese tema.
+
+### Tokens visuales
+
+El Shell define tokens de diseño para mantener consistencia visual entre modo claro y oscuro:
+
+```txt
+surface
+card
+media gradient
+brand gradient
+button
+text
+focus ring
+```
+
+La identidad visual sigue una misma línea en toda la aplicación:
+
+```txt
+Light mode → Pokémon Center / Pokédex clásica
+Dark mode  → Pokédex digital / scanner
+```
+
+Los componentes reutilizables usan clases semánticas como:
+
+```txt
+ui-card
+ui-card-media
+ui-surface-default
+ui-surface-soft
+ui-surface-danger
+ui-button-primary
+ui-button-secondary
+ui-text-primary
+ui-text-secondary
+ui-text-accent
+ui-focus-ring
+```
+
+Esto evita depender de estilos duplicados o combinaciones repetidas de clases Tailwind en cada feature.
 
 ---
 
@@ -730,6 +770,7 @@ Theme System:
 Design System:
 - Renderiza componentes consistentes según el tema activo.
 - Evita duplicación de estilos en cards, buttons, skeletons y surfaces.
+- Usa tokens CSS y clases semánticas para unificar fondo, bordes, sombras, textos, focus ring y gradientes.
 ```
 
 ---
@@ -768,6 +809,7 @@ Mejoras implementadas:
 * Normalización de nombres ingresados por usuario.
 * Separación de lógica en mappers y helpers testeables.
 * Reducción de CSS duplicado mediante Design System compartido.
+* Tokens visuales para mantener consistencia entre light mode y dark mode.
 * SEO básico con meta description, manifest y robots.txt.
 
 Resultado PageSpeed validado en Home:
@@ -899,7 +941,7 @@ También define caché para assets y `index.html`.
 
 Los remotes exponen `remoteEntry.js` y assets con headers CORS para permitir que el Shell los cargue dinámicamente.
 
-Además, `remoteEntry.js` usa política de no-cache para evitar que el Shell consuma una versión desactualizada del manifest remoto.
+Además, `remoteEntry.js` usa política de no-cache para evitar que el Shell consuma una versión desactualizada del manifest remoto. Los assets versionados de Vite usan caché larga porque cambian de nombre en cada build.
 
 ---
 
@@ -987,11 +1029,13 @@ Deploy Netlify                     ✅
 * No se implementó internacionalización completa.
 * No se implementó virtualización para listas muy grandes.
 * No se implementó Storybook.
+* El componente de detalle puede seguir refactorizándose en subcomponentes más pequeños para mejorar mantenibilidad.
 
 ---
 
 ## 31. Mejoras futuras
 
+* Refactorizar el Detail MF en subcomponentes más pequeños para reducir complejidad del componente principal.
 * Agregar Storybook para documentar el Design System.
 * Agregar tests de integración para flujo login → home → detalle → historial.
 * Agregar E2E con Playwright o Cypress.
